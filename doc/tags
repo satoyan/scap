@@ -1,0 +1,5 @@
+scap	scap.txt	/*scap*
+scap-contents	scap.txt	/*scap-contents*
+scap-intro	scap.txt	/*scap-intro*
+scap-usage	scap.txt	/*scap-usage*
+scap.txt	scap.txt	/*scap.txt*

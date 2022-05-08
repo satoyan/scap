@@ -1,0 +1,24 @@
+*scap.txt* Vim plugin for capturing source code.
+*scap*
+
+===============================================
+CONTENTS *scap-contents*
+
+1. Intro ....|scap-intro|
+2. Usage ....|scap-usage|
+
+===============================================
+1. Intro *scap-intro*
+
+By using this plugin, you can make beautiful image of source code easily.
+This makes use of https://ray.so web service.
+
+Linux(Neovim) is only platform I confirmed.
+
+
+2. Usage  *scap-usage*
+
+  1. Select lines you want to take capture.
+  2. Press keys "gs". Or ":call scap#Capture()"
+  3. That's it.
+
