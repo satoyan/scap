@@ -8,7 +8,7 @@ function! scap#BuildTitle()
   let l:select_from = getpos("'<")[1]
   let l:select_to = getpos("'>")[1]
   let l:file_name = expand('%:.')
-  return l:file_name . ' Line:' . l:select_from . '%7E' . l:select_to "%7E = ~
+  return l:file_name . ' Line:' . l:select_from . '%7E' . l:select_to "
 endfunction
 
 function! scap#EncodeBase64(code)
@@ -40,3 +40,21 @@ function! scap#Capture() range
   let l:result = system('open ' . shellescape(substitute(l:url, '+', '%2B', 'g')))
 endfunction
 
+function! scap#BuildFileName()
+  let l:select_from = getpos("'<")[1]
+  let l:select_to = getpos("'>")[1]
+  let l:file_name = expand('%:.')
+  return l:file_name . ':' . l:select_from
+endfunction
+
+function! scap#CopyAsMarkdown() range
+  let l:lang = &filetype
+  let l:fileName = scap#BuildFileName()
+  let l:code = '```' . l:lang . "\n"
+        \. '# ' . l:fileName . "\n\n"
+        \. join(scap#GetSelectedLines(), "\r\n")
+        \. "\n```"
+  let @a = l:code
+  let @+=@a
+  echo "done"
+endfunction
