@@ -16,8 +16,9 @@ Plug 'git@github.com:satoyan/scap.git'
 ## How to use
 
 1. select lines which you want as visual mode.
-2. press keys 'gs'
-3. then web browser will open https://ray.so
+2.
+  * press keys 'gs' to copy to clipboard as Markdown code block.
+  * press keys 'gS', then browser will open https://ray.so with text selected
 
 
 
