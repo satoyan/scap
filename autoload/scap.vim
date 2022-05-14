@@ -1,17 +1,31 @@
-function! scap#GetSelectedLines()
+function! s:getSelectedLines()
   let l:select_from = getpos("'<")[1]
   let l:select_to = getpos("'>")[1]
   return getline(l:select_from, l:select_to)
 endfunction
 
-function! scap#BuildTitle()
+function! s:padding(s,number)
+  return repeat(' ', a:number - len(a:s)) . a:s
+endfunction
+
+function! s:getSelectedLinesWithLineNumbers()
+  let l:select_from = getpos("'<")[1]
+  let l:select_to = getpos("'>")[1]
+  let l:lines = getline(l:select_from, l:select_to)
+  let l:maxLen = len(l:select_to)
+  let l:linesWithLineNumbers = map(l:lines, {i, val
+        \ -> s:padding((i + l:select_from), l:maxLen)  . '  ' . val})
+  return l:linesWithLineNumbers
+endfunction
+
+function! s:buildTitle()
   let l:select_from = getpos("'<")[1]
   let l:select_to = getpos("'>")[1]
   let l:file_name = expand('%:.')
   return l:file_name . ' Line:' . l:select_from . '%7E' . l:select_to "
 endfunction
 
-function! scap#EncodeBase64(code)
+function! s:encodeBase64(code)
   if has('macunix')
     return system('echo ' . shellescape(a:code) . ' | base64')
   elseif has("linux")
@@ -19,15 +33,40 @@ function! scap#EncodeBase64(code)
   endif
 endfunction
 
+function! s:buildFileName()
+  let l:select_from = getpos("'<")[1]
+  let l:select_to = getpos("'>")[1]
+  let l:file_name = expand('%:.')
+  return l:file_name . ':' . l:select_from
+endfunction
+
+function! s:getCommentString()
+  return substitute(&commentstring, '%s', '', 'g')
+endfunction
+
+function! scap#CopyAsMarkdown() range
+  let l:lang = &filetype
+  let l:fileName = s:buildFileName()
+  let l:content = '_```' . l:fileName . '```_' . "\n"
+      \. '```' . l:lang . "\n"
+      \. join(s:getSelectedLines(), "\r\n")
+      \. "\n"
+      \. s:getCommentString() . ' created by scap'
+      \. "\n```"
+
+  let @a = l:content
+  let @+=@a
+endfunction
+
 function! scap#Capture() range
-  let l:code = join(scap#GetSelectedLines(), "\r\n")
+  let l:code = join(s:getSelectedLines(), "\r\n")
   let l:urlBase = 'https://ray.so'
-  let l:title = scap#BuildTitle()
+  let l:title = s:buildTitle()
   let l:language = &filetype
   let l:colors = 'breeze'
   let l:dark_mode = 'true'
   let l:padding = 32
-  let l:codeBase64 = scap#EncodeBase64(l:code)
+  let l:codeBase64 = s:encodeBase64(l:code)
 
   let l:url = l:urlBase
      \. '?title=' . l:title
@@ -40,27 +79,3 @@ function! scap#Capture() range
   let l:result = system('open ' . shellescape(substitute(l:url, '+', '%2B', 'g')))
 endfunction
 
-function! scap#BuildFileName()
-  let l:select_from = getpos("'<")[1]
-  let l:select_to = getpos("'>")[1]
-  let l:file_name = expand('%:.')
-  return l:file_name . ':' . l:select_from
-endfunction
-
-function! scap#GetCommentString()
-  return substitute(&commentstring, '%s', '', 'g')
-endfunction
-
-function! scap#CopyAsMarkdown() range
-  let l:lang = &filetype
-  let l:fileName = scap#BuildFileName()
-  let l:content = '_```' . l:fileName . '```_' . "\n"
-      \. '```' . l:lang . "\n"
-      \. join(scap#GetSelectedLines(), "\r\n")
-      \. "\n"
-      \. scap#GetCommentString() . ' created by scap'
-      \. "\n```"
-
-  let @a = l:content
-  let @+=@a
-endfunction
