@@ -47,14 +47,20 @@ function! scap#BuildFileName()
   return l:file_name . ':' . l:select_from
 endfunction
 
+function! scap#GetCommentString()
+  return substitute(&commentstring, '%s', '', 'g')
+endfunction
+
 function! scap#CopyAsMarkdown() range
   let l:lang = &filetype
   let l:fileName = scap#BuildFileName()
-  let l:code = '```' . l:lang . "\n"
-        \. '# ' . l:fileName . "\n\n"
-        \. join(scap#GetSelectedLines(), "\r\n")
-        \. "\n```"
-  let @a = l:code
+  let l:content = '_```' . l:fileName . '```_' . "\n"
+      \. '```' . l:lang . "\n"
+      \. join(scap#GetSelectedLines(), "\r\n")
+      \. "\n"
+      \. scap#GetCommentString() . ' created by scap'
+      \. "\n```"
+
+  let @a = l:content
   let @+=@a
-  echo "done"
 endfunction
