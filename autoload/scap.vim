@@ -50,8 +50,6 @@ function! scap#CopyAsMarkdown() range
   let l:content = '_```' . l:fileName . '```_' . "\n"
       \. '```' . l:lang . "\n"
       \. join(s:getSelectedLines(), "\r\n")
-      \. "\n"
-      \. s:getCommentString() . ' created by scap'
       \. "\n```"
 
   let @a = l:content
@@ -63,10 +61,11 @@ function! scap#Capture() range
   let l:urlBase = 'https://ray.so'
   let l:title = s:buildTitle()
   let l:language = &filetype
-  let l:colors = 'breeze'
+  let l:colors = get(g:,'scap_colors', 'breeze')
   let l:dark_mode = 'true'
   let l:padding = 32
   let l:codeBase64 = s:encodeBase64(l:code)
+  let l:background = get(g:, 'scap_background', 'false')
 
   let l:url = l:urlBase
      \. '?title=' . l:title
@@ -74,6 +73,7 @@ function! scap#Capture() range
      \. '&colors=' . l:colors
      \. '&darkMode=' . l:dark_mode
      \. '&padding=' . l:padding
+     \. '&background=' . l:background
      \. '&code=' . l:codeBase64
 
   let l:result = system('open ' . shellescape(substitute(l:url, '+', '%2B', 'g')))
