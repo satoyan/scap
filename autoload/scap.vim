@@ -68,7 +68,7 @@ function! scap#Capture() range
   let l:background = get(g:, 'scap_background', 'false')
 
   let l:url = l:urlBase
-     \. '?title=' . l:title
+     \. '#title=' . l:title
      \. '&language=' . l:language
      \. '&colors=' . l:colors
      \. '&darkMode=' . l:dark_mode
