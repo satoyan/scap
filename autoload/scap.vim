@@ -70,7 +70,7 @@ function! scap#Capture() range
   let l:url = l:urlBase
      \. '#title=' . l:title
      \. '&language=' . l:language
-     \. '&colors=' . l:colors
+     \. '&theme=' . l:colors
      \. '&darkMode=' . l:dark_mode
      \. '&padding=' . l:padding
      \. '&background=' . l:background
